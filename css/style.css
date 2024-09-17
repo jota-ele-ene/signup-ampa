@@ -238,3 +238,63 @@ h2 {
   .footer{
     font-size: small;
     color:#7b7b7b;}
+
+    .modal-header,.modal-footer {
+      border:0;
+      padding:1.5em;}
+
+    .modal-body{
+      height:50px;
+      padding: 0;}
+
+    .loader {
+      width: 250px;
+      height: 50px;
+
+      line-height: 50px;
+      text-align: center;
+      font-family: helvetica, arial, sans-serif;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: #fb771a;
+      letter-spacing: 0.2em;
+
+      /* Yatayda ve Düşeyde Ortalama   */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .loader::before,
+    .loader::after {
+      content: "";
+      display: block;
+      width: 15px;
+      height: 15px;
+      background: #fb771a;
+      position: absolute;
+      animation: load 0.9s infinite alternate ease-in-out;
+    }
+    .loader::before {
+      top: 0;
+    }
+    .loader::after {
+      bottom: 0;
+    }
+
+    @keyframes load {
+      0% {
+        left: 0;
+        height: 30px;
+        width: 15px;
+      }
+      50% {
+        height: 8px;
+        width: 40px;
+      }
+      100% {
+        left: 235px;
+        height: 30px;
+        width: 15px;
+      }
+    }

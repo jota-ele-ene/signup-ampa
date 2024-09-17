@@ -41,7 +41,7 @@
             "><img src="images/logo.png" height="150"></div>
             <h1>Inscripción de nuevos asociados</h1>
             <p class="mb-4">Bienvenidos a la Asociación de Madres y Padres de Alumnos del Colegio Sagrada Familia de Jorge Juan de Madrid. Rellena los siguientes datos para que podamos registrar a tu familia como miembro de la asociación. </p>
-            <form action="https://formbold.com/s/3dGNb" class="needs-validation" novalidate>
+            <form class="needs-validation" novalidate>
               <div class="row justify-content-start">
                 <div class="col-md-auto">
                   <p style="font-weight: normal">¿Era miembro de la asociación en el curso 23/24?</p>
@@ -68,7 +68,7 @@
                   <div class="col-md-4">
                     <div class="form-group first">
                       <label for="nombre">Nombre</label>
-                      <input type="text" class="form-control" placeholder="e.g. Jose Carlos" id="nombre" name="nombre">
+                      <input type="text" class="form-control" placeholder="e.g. Jose Carlos" id="nombre" name="nombre" required>
                       <div class="invalid-feedback">
                         Por favor, introduzca un nombre correcto
                       </div>
@@ -77,7 +77,7 @@
                   <div class="col-md-5">
                     <div class="form-group first">
                       <label for="apellido">Apellidos</label>
-                      <input type="text" class="form-control" placeholder="e.g. García García" id="apellido" name="apellido">
+                      <input type="text" class="form-control" placeholder="e.g. García García" id="apellido" name="apellido" required>
                       <div class="invalid-feedback">
                         Por favor, introduzca los apellidos
                       </div>
@@ -86,7 +86,7 @@
                   <div class="col-md-3">
                     <div class="form-group first">
                       <label for="curso">Curso</label>
-                      <select class="form-control form-select" aria-label="Default select example" value="" id="curso" name="curso">
+                      <select class="form-control form-select" aria-label="Default select example" value="" id="curso" name="curso" required>
                         <option hidden disabled selected value>  </option>
                         <option value="Escuela infantil">Escuela Infantil</option>
                         <option value="1º Infantil">1º Infantil</option>
@@ -126,7 +126,7 @@
                 <div class="col-md-4">
                   <div class="form-group first">
                     <label for="email1">Correo electrónico 1</label>
-                    <input type="emial" class="form-control" placeholder="e.g. jose@test.com" id="email1" name="email1" required>
+                    <input type="email" class="form-control" placeholder="e.g. jose@test.com" id="email1" name="email1" required>
                     <div class="invalid-feedback">
                       Por favor, introduzca un email correcto
                     </div>
@@ -144,9 +144,9 @@
               </div>
 
 
-              <h3 class="mt-5">DATOS BANCARIOS DE DOMICILIACIÓN</h3>
-              <p class="mb-3">Si ya erais socios en el curso anterior utilizaremos la información que consta en nuestros ficheros.</p>
-              <div class="row">
+              <h3 class="mt-5 bank-data">DATOS BANCARIOS DE DOMICILIACIÓN</h3>
+              <p class="mb-3 bank-data">Si ya erais socios en el curso anterior utilizaremos la información que consta en nuestros ficheros.</p>
+              <div class="row bank-data">
                 <div class="col-md-4">
                   <div class="form-group first">
                     <label for="titular">Titular de la cuenta</label>
@@ -158,15 +158,15 @@
                 </div>
                 <div class="col-md-4">
                   <div class="form-group first">
-                    <label for="email2">NIF del titular</label>
-                    <input type="email" class="form-control" placeholder="e.g. 12345678Z" id="nif" name="nif" required>
+                    <label for="nif">NIF del titular</label>
+                    <input type="text" class="form-control" placeholder="e.g. 12345678Z" id="nif" name="nif" required>
                     <div class="invalid-feedback">
                       Por favor, introduzca un NIF correcto
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row bank-data">
                 <div class="col-md-8">
                   <div class="form-group first">
                     <label for="iban">IBAN de la cuenta de cargo</label>
@@ -211,7 +211,32 @@
 
   </div>
 
-
+  <!-- Modal -->
+  <div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+        </div>
+        <div class="modal-body">
+          <div class="loader">Enviando ...</div>
+          <div class="container-fluid d-none res-loader-ok">
+            <div class="row justify-content-center">
+              <div class="col-md-auto col-right"><img src="images/checkmark.png" height="20px"></div>
+              <div class="col-md-9" id="resHijos"></div>
+            </div>
+          </div>
+          <div class="container-fluid d-none res-loader-nok">
+            <div class="row justify-content-center">
+              <div class="col-md-auto col-right"><img src="images/error.png" height="20px"></div>
+              <div class="col-md-9">Se ha producido un erroral inscribir a sus hijos.<br>Inténtelo más tarde.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
 
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/popper.min.js"></script>

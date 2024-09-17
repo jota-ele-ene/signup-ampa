@@ -2,10 +2,14 @@ $(function() {
 
   $('.submitbutton').on('click', function(e) {
 
-    alert("submitting");
+    // Stop the browser from doing anything else
+    e.preventDefault();
+
+    //alert("submitting");
+    //alert("checkValidity:"+$('.needs-validation')[0].checkValidity());
 
     if (!customValidation() || !$('.needs-validation')[0].checkValidity()) {
-      alert ("NO validated")
+      //alert ("NO validated")
       event.preventDefault()
       event.stopPropagation()
       if ($('#email2').val() == "") {
@@ -13,8 +17,9 @@ $(function() {
       }
     }
     else {
-      alert ("validated and process")
+      //alert ("validated and process")
       processAndSend();
+      $(this).attr("disabled","");
     }
 
     $('.needs-validation')[0].classList.add('was-validated')
@@ -25,7 +30,7 @@ $(function() {
 
      var nHijos = $('.rowHijo');
 
-     alert ("cloning hijo número " + (nHijos.length+1) );
+     //alert ("cloning hijo número " + (nHijos.length+1) );
 
      var fields_group = $('#datosHijo');
      var fields_template = fields_group.clone(true);
@@ -33,7 +38,7 @@ $(function() {
      this.id = "datosHijo" + nHijos.length;
      var field_section = fields_template.clone(true).find('.form-control').each(function(){
 
-       alert (this.id)
+       //alert (this.id)
        //set id to store the updated section number
        var newId = this.id + nHijos.length;
 
@@ -45,6 +50,7 @@ $(function() {
 
        //update name attribute
        $(this).attr('name', newId);
+       $(this).val("");
 
      }).end();
 
@@ -52,39 +58,81 @@ $(function() {
 
    });
 
+   $('#checkSiAMPA').on('change', checkSiAMPA);
+   $('#checkNoAMPA').on('change', checkSiAMPA);
+
   $('.magic').on('change', checkIBAN);
   $('.magic').on('keyup', checkIBAN);
   $('.magic').on('paste', onPaste);
+  //$('#iban').on('change', validateIBAN);
+
+  $('#email1').on('change', checkEmail);
+  $('#email1').on('paste', onPaste);
+  $('#email2').on('change', checkEmail);
+  $('#email2').on('paste', onPaste);
+
+  $('#nif').on('change', checkNIF);
+  $('#nif').on('paste', onPaste);
 
 });
 
 function customValidation() {
-  return true;
+  if (!validateEmail($('#email1').val())) {return false;}
+  else if ($("#email2").val()&&!validateEmail($("#email2").val())) {//alert($("#email2").val());return false;}
+  else if($('#checkNoAMPA').is(':checked') && (!validateNIF($('#nif').val())||!validateIBAN($('#iban').val()))) {return false;}
+  else {return true;}
 }
 
 
-function procssAndSend() {
+function processAndSend() {
 
-    // Stop the browser from doing anything else
-    e.preventDefault();
+  $('#modalCenter').modal();
 
-    // Do an AJAX post
-    $.ajax({
-      type: "POST",
-      url: "https://formbold.com/s/3dGNb",
-      data: {
-        nombre: $("#nombre").val(),
-        apellido: $("#apellido").val()
-      },
-      success: function(data) {
-        // POST was successful - do something with the response
-        alert('Server sent back: ' + data);
-      },
-      error: function(data) {
-        // Server error, e.g. 404, 500, error
-        alert(data.responseText);
-      }
-    });
+  var nHijos = $('.rowHijo');
+  var nrecord = 0;
+
+  for (let i = 0; i < nHijos.length; i++) {
+
+      var isAMPA = $('#checkSiAMPA').is(':checked') ? "SI" : "NO";
+      var resHijos = "Hemos inscrito en la AMPA a {numHijos}.<br>Nos vemos en el cole.";
+      var sufix = "";
+      if (i>0) sufix = i;
+        // Do an AJAX post
+        $.ajax({
+          type: "POST",
+          url: "https://formbold.com/s/3dGNb",
+          data: {
+            nombre: $("#apellido"+sufix).val() + ", " + $("#nombre"+sufix).val(),
+            curso: $("#curso"+sufix).val(),
+            ampa: isAMPA,
+            titular: $("#titular").val(),
+            nif: $("#nif").val(),
+            iban: $("#iban").val(),
+            email1: $("#email1").val(),
+            email2: $("#email2").val()
+          },
+          success: function(data) {
+            // POST was successful - do something with the response
+            if (nrecord>-1) nrecord++;
+            if (nrecord === nHijos.length)
+            {
+              $(".loader").addClass('d-none');
+              $(".res-loader-ok").removeClass('d-none');
+              if (nrecord === 1) { $("#resHijos").html(resHijos.replace("{numHijos}", "tu hijo")); }
+              else { $("#resHijos").html(resHijos.replace("{numHijos}","tus "+nrecord+" hijos")); }
+            }
+          },
+          error: function(data) {
+            // Server error, e.g. 404, 500, error
+            //alert ("fail after: "+ nrecord)
+            nrecord = -1;
+            $(".loader").addClass('d-none');
+            $(".res-loader-nok").removeClass('d-none');
+          }
+        });
+
+    }
+
   }
 
 
@@ -110,81 +158,16 @@ var filled = function (val) {
 
 //default ibans
 var defaults = {
-	"AL": 28,
-	"AD": 24,
-	"AT": 20,
-	"AZ": 28,
-	"BH": 22,
-	"BY": 28,
-	"BE": 16,
-	"BA": 20,
-	"BR": 29,
-	"BG": 22,
-	"CR": 22,
-	"HR": 21,
-	"CY": 28,
-	"CZ": 24,
-	"DK": 18,
-	"DO": 28,
-	"SV": 28,
-	"EE": 20,
-	"FO": 18,
-	"FI": 18,
-	"FR": 27,
-	"GE": 22,
-	"DE": 22,
-	"GI": 23,
-	"GR": 27,
-	"GL": 18,
-	"GT": 28,
-	"HU": 28,
-	"IS": 26,
-	"IQ": 23,
-	"IE": 22,
-	"IL": 23,
-	"IT": 27,
-	"JO": 30,
-	"KZ": 20,
-	"XK": 20,
-	"KW": 30,
-	"LV": 21,
-	"LB": 28,
-	"LI": 21,
-	"LT": 20,
-	"LU": 20,
-	"MK": 19,
-	"MT": 31,
-	"MR": 27,
-	"MU": 30,
-	"MD": 24,
-	"MC": 27,
-	"ME": 22,
-	"NL": 18,
-	"NO": 15,
-	"PK": 24,
-	"PS": 29,
-	"PL": 28,
-	"PT": 25,
-	"QA": 29,
-	"RO": 24,
-	"LC": 32,
-	"SM": 27,
-	"ST": 25,
-	"SA": 24,
-	"RS": 22,
-	"SC": 31,
-	"SK": 24,
-	"SI": 19,
-	"ES": 24,
-	"SE": 24,
-	"CH": 21,
-	"TL": 23,
-	"TN": 24,
-	"TR": 26,
-	"UA": 29,
-	"AE": 23,
-	"GB": 22,
-	"VG": 24
+	"AL": 28,	"AD": 24,	"AT": 20,	"AZ": 28,	"BH": 22,	"BY": 28,	"BE": 16,	"BA": 20,
+	"BR": 29,	"BG": 22,	"CR": 22,	"HR": 21,	"CY": 28,	"CZ": 24,	"DK": 18,	"DO": 28,
+	"SV": 28,	"EE": 20,	"FO": 18,	"FI": 18,	"FR": 27,	"GE": 22,	"DE": 22,	"GI": 23,
+	"GR": 27,	"GL": 18,	"GT": 28,	"HU": 28,	"IS": 26,	"IQ": 23,	"IE": 22,	"IL": 23,
+	"IT": 27,	"JO": 30,	"KZ": 20,	"XK": 20,	"KW": 30,	"LV": 21,	"LB": 28,	"LI": 21,
+	"LT": 20,	"LU": 20,	"MK": 19,	"MT": 31,	"MR": 27,	"MU": 30,	"MD": 24,	"MC": 27,
+	"ME": 22,	"NL": 18,	"NO": 15,	"PK": 24,	"PS": 29,	"PL": 28,	"PT": 25,	"QA": 29,
+	"RO": 24,	"LC": 32,	"SM": 27,	"ST": 25,	"SA": 24,	"RS": 22,	"SC": 31,	"SK": 24,
+	"SI": 19,	"ES": 24,	"SE": 24,	"CH": 21,	"TL": 23,	"TN": 24,	"TR": 26,	"UA": 29,
+	"AE": 23,	"GB": 22,	"VG": 24
 }
 
 //set mask function
@@ -196,6 +179,12 @@ function setMask(val) {
 function setLength(length) {
   if (length<100) $input.attr('minlength', length);
   $input.attr('maxlength', length);
+}
+
+function checkSiAMPA(e) {
+	$input = $(this)
+  if($('#checkSiAMPA').is(':checked')) { $(".bank-data input").removeAttr("required"); $(".bank-data input").attr("disabled","")}
+  else { $(".bank-data input").attr("required",""); $(".bank-data input").removeAttr("disabled")}
 }
 
 //check inban function
@@ -313,6 +302,20 @@ function checkIBAN(e) {
 		//set maxlength
 		setLength(500);
 	}
+
+  if (validateIBAN(edit))
+  {
+    $input[0].classList.remove('is-invalid')
+    $input[0].classList.add('is-valid')
+    return true;
+  }
+  else
+  {
+    $input[0].classList.remove('is-valid')
+    $input[0].classList.add('is-invalid')
+    return false;
+  }
+
 }
 
 //detect change on paste event
@@ -325,4 +328,119 @@ function onPaste(e) {
 
 	//trigger change
 	$(this).change();
+}
+
+//check inban function
+function checkEmail(e) {
+	$input = $(this);
+  const email = $input.val();
+
+  if (email && validateEmail(email) )
+  {
+    $input[0].classList.remove('is-invalid')
+    $input[0].classList.add('is-valid')
+    return true;
+  }
+  else
+  {
+    $input[0].classList.remove('is-valid')
+    $input[0].classList.add('is-invalid')
+    return false;
+  }
+}
+
+function validateEmail(email) {
+
+  const emailPattern =
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailPattern.test(email);
+
+}
+
+//check inban function
+function checkNIF(e) {
+	$input = $(this);
+  const nif = $input.val();
+  if (nif && validateNIF(nif) )
+  {
+    $input[0].classList.remove('is-invalid')
+    $input[0].classList.add('is-valid')
+    return true;
+  }
+  else
+  {
+    $input[0].classList.remove('is-valid')
+    $input[0].classList.add('is-invalid')
+    return false;
+  }
+}
+
+function validateNIF(dni) {
+
+    var numero, let, letra;
+    var expresion_regular_dni = /^[XYZ]?\d{5,8}[A-Z]$/;
+
+    dni = dni.toUpperCase();
+
+    if(expresion_regular_dni.test(dni) === true){
+        numero = dni.substr(0,dni.length-1);
+        numero = numero.replace('X', 0);
+        numero = numero.replace('Y', 1);
+        numero = numero.replace('Z', 2);
+        let = dni.substr(dni.length-1, 1);
+        numero = numero % 23;
+        letra = 'TRWAGMYFPDXBNJZSQVHLCKET';
+        letra = letra.substring(numero, numero+1);
+        if (letra != let) {
+            //alert('Dni erroneo, la letra del NIF no se corresponde');
+            return false;
+        }else{
+            //alert('Dni correcto');
+            return true;
+        }
+    }else{
+        //alert('Dni erroneo, formato no válido');
+        return false;
+    }
+}
+
+function validateIBAN(edit) {
+    var digits = "";
+    var iban = String(edit).toUpperCase().replace(/[^A-Z0-9]/g, ''), // keep only alphanumeric characters
+            code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/), // match and capture (1) the country code, (2) the check digits, and (3) the rest
+            digits;
+    // check syntax and length
+    //if (!code || iban.length !== CODE_LENGTHS[code[1]]) {
+    if (!code || iban.length !== defaults[code[1]]) {
+        return false;
+    }
+    // rearrange country code and check digits, and convert chars to ints
+    digits = (code[3] + (""+code[1]) + code[2]).replace(/[A-Z]/g, function (letter) {
+        if (letter.charCodeAt(0) - 55) {
+            return letter.charCodeAt(0) - 55;
+        }
+    });
+    // final check
+    if (mod97(digits) === 1)
+    {
+        return true;
+    }
+    else {
+      return false;
+    }
+
+}
+
+function mod97(string) {
+    var checksum = string.slice(0, 2), fragment;
+    for (var offset = 2; offset < string.length; offset += 7) {
+        fragment = String(checksum) + string.substring(offset, offset + 7);
+        checksum = parseInt(fragment, 10) % 97;
+    }
+    return checksum;
+}
+
+function getnumIBAN(letra) {
+    ls_letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    return ls_letras.search(letra) + 10;
 }
