@@ -78,7 +78,7 @@ $(function() {
 
 function customValidation() {
   if (!validateEmail($('#email1').val())) {return false;}
-  else if ($("#email2").val()&&!validateEmail($("#email2").val())) {//alert($("#email2").val());return false;}
+  else if ($("#email2").val()&&!validateEmail($("#email2").val())) {return false;}
   else if($('#checkNoAMPA').is(':checked') && (!validateNIF($('#nif').val())||!validateIBAN($('#iban').val()))) {return false;}
   else {return true;}
 }
@@ -105,7 +105,7 @@ function processAndSend() {
             nombre: $("#apellido"+sufix).val() + ", " + $("#nombre"+sufix).val(),
             curso: $("#curso"+sufix).val(),
             ampa: isAMPA,
-            titular: $("#titular").val(),
+            titular: $("#titular").val().toUpperCase();,
             nif: $("#nif").val(),
             iban: $("#iban").val(),
             email1: $("#email1").val(),
