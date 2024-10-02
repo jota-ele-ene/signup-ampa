@@ -102,7 +102,7 @@ function processAndSend() {
         // Do an AJAX post
         $.ajax({
           type: "POST",
-          url: "https://formbold.com/s/3dGNb",
+          url: "https://formbold.com/s/9x2zW",
           data: {
             nombre: $("#apellido"+sufix).val() + ", " + $("#nombre"+sufix).val(),
             curso: $("#curso"+sufix).val(),
